@@ -1,0 +1,32 @@
+{
+  "name": "mern",
+  "version": "1.0.0",
+  "description": "A MERN project to practice",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server",
+    "server": "nodemon server",
+    "client": "yarn --cwd ./client start",
+    "dev": "concurrently \"yarn server\" \"yarn client\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tomascasas/mern.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tomascasas/mern/issues"
+  },
+  "homepage": "https://github.com/tomascasas/mern#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "concurrently": "^5.1.0",
+    "config": "^3.3.1",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "mongoose": "^5.9.7",
+    "nodemon": "^2.0.3"
+  }
+}
