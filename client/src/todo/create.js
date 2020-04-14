@@ -1,4 +1,5 @@
 import React, {useState} from 'react'
+import jsonFetch from 'lib/json-fetch'
 
 const getInitialState = () => ({
   description: '',
@@ -12,17 +13,31 @@ export default () => {
           description,
           responsible,
           priority,
-          // completed
+          completed
         }, setTodo] = useState(getInitialState()),
+
         handleInputChange = ({target: {name, value}}) => setTodo(todo => ({
           ...todo,
           [name]: value
         })),
-        handleSubmit = e => {
+
+        handleSubmit = async (e) => {
           e.preventDefault()
-          console.log('Todo Submitterd!')
-          // clear, why?
-          setTodo(getInitialState())
+          try {
+            await jsonFetch('http://localhost:4000/api/todos', {
+              method: 'POST',
+              body: JSON.stringify({
+                description,
+                responsible,
+                priority,
+                completed
+              })
+            })
+            setTodo(getInitialState())
+          }
+          catch(e) {
+            alert(e)
+          }
         }
 
   return (

@@ -10,12 +10,16 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.1.2",
-    "react-scripts": "3.4.1"
+    "react-scripts": "3.4.1",
+    "whatwg-fetch": "^3.0.0"
+  },
+  "devDependencies": {
+    "react-app-rewired": "^2.1.5"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "start": "react-app-rewired start --scripts-version react-scripts",
+    "build": "react-app-rewired build --scripts-version react-scripts",
+    "test": "react-app-rewired test --scripts-version react-scripts",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

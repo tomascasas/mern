@@ -1,89 +1,35 @@
+const path = require('path')
 const express = require('express')
+const cookieParser = require('cookie-parser')
+const createError = require('http-errors')
 const cors = require('cors')
-// const bodyParser = require('body-parser')
 
 const connectDB = require('./config/db')
-const asyncMiddleware = require('./lib/async-middleware')
-const Todo = require('./models/todo')
+const {logErrors, clientErrorHandler, errorHandler} = require('./error-handling')
+const apiRoutes = require('./routes/api')
+const appRoutes = require('./routes/app')
 
-const todoRoutes = express.Router()
 const app = express()
 connectDB()
 
 const PORT = process.env.PORT || 4000
+
+app.set('views', path.join(__dirname, 'views'))
+app.set('view engine', 'jade')
+
+// app.use(logger('dev'));
 app.use(cors())
 app.use(express.json())
-
-
-
-
-todoRoutes.route('/todos').get(asyncMiddleware(async (req, res) => {
-  try {
-    const todos = await Todo.find()
-    res.json(todos)
-  }
-  catch(e) {
-    console.error('getAll', e)
-    res.status(400).send(e)
-  }
-}))
-
-todoRoutes.route('/todos/:id').get(asyncMiddleware(async ({params: {id: _id}}, res) => {
-  try {
-    const todo = await Todo.findById(_id)
-    if(todo) res.json(todo)
-    else res.status(404).send(`Could not find ${_id}`)
-  }
-  catch(e) {
-    console.error('get', e)
-    res.status(404).send(e)
-  }
-}))
-
-todoRoutes.route('/todos').post(asyncMiddleware(async ({body}, res) => {
-  console.log('post', body)
-  try {
-    const todo = new Todo(body),
-          savedTodo = await todo.save()
-    res.status(200).json(savedTodo)
-  }
-  catch(e) {
-    console.error('post', e)
-    res.status(400).send(e)
-  }
-}))
-
-todoRoutes.route('/todos/:id').put(asyncMiddleware(async ({params: {id: _id}, body}, res) => {
-  console.log('put', body)
-  try {
-    const updatedTodo = await Todo.findOneAndUpdate({_id}, body, {
-            new: true
-          })
-    if(updatedTodo) res.json(updatedTodo)
-    else res.status(404).send(`Could not find ${_id}`)
-  }
-  catch(e) {
-    console.error('put', e)
-    res.status(400).send(e)
-  }
-}))
-
-todoRoutes.route('/todos/:id').delete(asyncMiddleware(async ({params: {id: _id}}, res) => {
-  console.log('delete', _id)
-  try {
-    const deletedId = await Todo.findOneAndDelete({_id})
-    if(deletedId) res.status(200).send(null)
-    else res.status(404).send(`Could not find ${_id}`)
-  }
-  catch(e) {
-    console.error('delete', e)
-    res.status(400).send(e)
-  }
-}))
-
-app.use('/api', todoRoutes)
-
-
+app.use(express.urlencoded({ extended: false }))
+app.use(cookieParser())
+app.use('/api', apiRoutes)
+app.use('/', appRoutes)
+app.use(express.static(path.join(__dirname, 'client/build')))
+// catch 404 and forward to error handler
+app.use((req, res, next) => next(createError(404)))
+app.use(logErrors)
+app.use(clientErrorHandler)
+app.use(errorHandler)
 
 app.listen(PORT, () => {
   console.log(`Express running on port ${PORT}`)

@@ -1,10 +1,10 @@
 import React from 'react'
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
-import TodoList from './todos/list'
-import EditTodo from './todo/edit'
-import CreateTodo from './todo/create'
-import logo from "./logo.svg"
-import "bootstrap/dist/css/bootstrap.min.css"
+import TodoList from 'todo/list'
+import EditTodo from 'todo/edit'
+import CreateTodo from 'todo/create'
+import logo from 'logo.svg'
+import 'bootstrap/dist/css/bootstrap.min.css'
 
 
 function App() {
